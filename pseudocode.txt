@@ -1,0 +1,29 @@
+Ask 7 questions  in inquirer.prompt 
+choices: ['View all Departments', 'View all roles', 'View all employees', 'Add a department', 'Add a role', 'Add an employee', 'Update an employee role', 'Quit'],
+
+then we need an if else statement or a switch statement
+
+a function for each of 7 prompts above
+
+View All Departments 
+    SQL command to view all 
+
+
+View all roles  
+    SQL command to view all
+
+View all employees
+    sql command to view all
+
+
+Add department    
+       sql Add the name of department 
+
+Add a role 
+    sql Add name, salary, department        
+
+add an employee
+    sql first, last, role & manager
+
+update an employee
+    sql employee number, or name, title    hit 2 tables      
