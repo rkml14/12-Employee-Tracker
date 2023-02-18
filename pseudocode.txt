@@ -27,3 +27,21 @@ add an employee
 
 update an employee
     sql employee number, or name, title    hit 2 tables      
+
+ASK BCS: 
+    SELECT all of the stuff you need AS department, role.salary CONCAT(the managers name together) AS manager FROM employee LEFT JOIN role on (wherever that makes sense to id the employee you want) = that id LEFT JOIN department on another id = etc et
+  
+  
+  
+  SELECT 
+  employee.id,
+  employee.first_name,
+  employee.last_name,
+  employee.manager_id,
+  roles.title,
+  roles.salary
+  CONCATE( employee.first_name, employee.last_name,)
+  FROM employee
+  LEFT JOIN roles
+  ON employee = roles.role_id;  
+  LEFT JOIN 
