@@ -23,3 +23,25 @@ CREATE TABLE department (
     manager_id: INT,
     FOREIGN KEY (role_id) REFERENCES roles(id) 
 );
+
+
+SELECT
+  student.first_name,
+  student.last_name,
+  course.name
+FROM student
+JOIN student_course
+  ON student.id = student_course.student_id
+JOIN course
+  ON course.id = student_course.course_id;
+
+  SELECT 
+  employee.id,
+  employee.first_name,
+  employee.last_name,
+  employee.manager_id,
+  roles.title,
+  roles.salary
+  FROM employee
+  JOIN roles
+  ON employee = roles.role_id;  

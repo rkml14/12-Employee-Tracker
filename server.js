@@ -22,8 +22,9 @@ const db = mysql.createConnection(
     console.log(`Connected to the employeetracker_db database.`)
 );
 
-
-const questions =
+function firstQuestion {
+inquirer
+.prompt =
     [
         {
             type: 'list',
@@ -32,6 +33,7 @@ const questions =
             choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add Department', 'Add Role', 'Add Employee', 'Update Employee', 'Quit'],
         },
     ]
+}
 
 //Using switch statement
 function trackerChoice(response) {
@@ -82,7 +84,10 @@ function allRoles() {
 
 //allEmployees presents a table with employee id, first & last names, job titles, departments, salaries & managers the employee reports to
 function allEmployees() {
-    console.table(results);
+    db.query('SELECT employee.id, employee.first_name, employee.last_name, employee.manager_id, roles.title, roles.salaryFROM employee JOIN roles ON employee = roles.role_id;', function (err, results) {
+        console.table(results);
+        res.status(200).json(results);
+      });
 };
 
 //addDepartment - prompt to enter the name of the depart & adds it to the database
@@ -152,3 +157,4 @@ function addEmployee() {
 function updateEmployee() {
 
 };
+
