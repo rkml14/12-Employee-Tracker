@@ -2,6 +2,7 @@
 const express = require('express');
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
+const cTable = require('console.table');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -28,32 +29,32 @@ const questions =
             type: 'list',
             message: 'What would you like to do?',
             name: 'options',
-            choices: ['View all Departments', 'View all roles', 'View all employees', 'Add a department', 'Add a role', 'Add an employee', 'Update an employee role', 'Quit'],
+            choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add Department', 'Add Role', 'Add Employee', 'Update Employee', 'Quit'],
         },
     ]
 
 //Using switch statement
 function trackerChoice(response) {
     switch (response.options) {
-        case 'View all Departments':
+        case 'View All Departments':
             allDepartments();
             break;
-        case 'View all roles':
+        case 'View All Roles':
             allRoles();
             break;
-        case 'View all employees':
+        case 'View All Employees':
             allEmployees();
             break;
-        case 'Add a department':
+        case 'Add Department':
             addDepartment();
             break;
-        case 'Add a role':
+        case 'Add Role':
             addRole();
             break;
-        case 'Add an employee':
+        case 'Add Employee':
             addEmployee();
             break;
-        case 'Update an employee role':
+        case 'Update Employee':
             updateEmployee();
             break;
         case 'Quit':  //might need something to actually end the program.  This just ends the switch statement
@@ -63,19 +64,28 @@ function trackerChoice(response) {
     }
 };
 
+//allDepartments presents a table with department names & department ids
 function allDepartments() {
-
+    db.query('SELECT * FROM department', function (err, results) {
+        console.table(results);
+        res.status(200).json(results);
+      });
 };
 
+//allRoles presents a table with job title, role id, dept the role belongs to & the salary for the role
 function allRoles() {
-
+    db.query('SELECT * FROM roles', function (err, results) {
+        console.table(results);
+        res.status(200).json(results);
+      });
 };
 
+//allEmployees presents a table with employee id, first & last names, job titles, departments, salaries & managers the employee reports to
 function allEmployees() {
-
+    console.table(results);
 };
 
-
+//addDepartment - prompt to enter the name of the depart & adds it to the database
 function addDepartment() {
     inquirer
         .prompt([
@@ -89,6 +99,7 @@ function addDepartment() {
 };
 
 
+//addRole - prompt to enter name, salary & department for the role & adds it to the database
 function addRole() {
     inquirer
         .prompt([
@@ -110,6 +121,7 @@ function addRole() {
         ])
 };
 
+//addEmployee - prompt to enter employee first & last names, role, manager and adds it to the database
 function addEmployee() {
     inquirer
         .prompt([
@@ -136,6 +148,7 @@ function addEmployee() {
         ])
 };
 
+//updateEmployee to update their new role & adds it to the database 
 function updateEmployee() {
 
 };
