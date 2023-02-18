@@ -32,7 +32,7 @@ const questions =
         },
     ]
 
-
+//Using switch statement
 function trackerChoice(response) {
     switch (response.options) {
         case 'View all Departments':
