@@ -84,6 +84,13 @@ function allRoles() {
 
 //allEmployees presents a table with employee id, first & last names, job titles, departments, salaries & managers the employee reports to
 function allEmployees() {
+
+
+
+
+
+
+    
     db.query('SELECT employee.id, employee.first_name, employee.last_name, employee.manager_id, roles.title, roles.salaryFROM employee JOIN roles ON employee = roles.role_id;', function (err, results) {
         console.table(results);
         res.status(200).json(results);

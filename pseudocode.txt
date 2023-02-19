@@ -37,6 +37,20 @@ ASK BCS:
   employee.id,
   employee.first_name,
   employee.last_name,
+  roles.title,
+  department.name AS Department,
+  roles.salary,
+  CONCAT(manager.first_name,' ', manager.last_name) AS Manager,
+  FROM employee
+  LEFT JOIN roles ON employee.role_id = roles.id  
+  LEFT JOIN department on roles.department_id = department.id
+  LEFT JOIN employee AS Manager on employee.manager_id = manager.id;
+
+
+
+
+
+
   employee.manager_id,
   roles.title,
   roles.salary
@@ -45,3 +59,6 @@ ASK BCS:
   LEFT JOIN roles
   ON employee = roles.role_id;  
   LEFT JOIN 
+
+
+ 
