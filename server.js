@@ -128,12 +128,22 @@ function addRole() {
             },
             {
                 type: 'input',
-                message: 'To which department does the role belong?',
+                message: 'To which department ID does the role belong?',
                 name: 'department_id',
             },
         ])
-        .then()
+        .then((response) => {
+            db.query("INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?), [roles.title, roles.salary, roles.department_id]")
+            console.table(response);
+        })
+        startMenu();
 };
+
+
+
+
+
+
 
 //addEmployee - prompt to enter employee first & last names, role, manager and adds it to the database
 function addEmployee() {
@@ -151,15 +161,20 @@ function addEmployee() {
             },
             {
                 type: 'input',
-                message: 'What is their role?',
+                message: 'What is their role ID?',
                 name: 'role_id',
             },
             {
                 type: 'input',
-                message: 'What is the manager for the role?',
+                message: 'What is the manager ID for the role?',
                 name: 'manager_id',
             },
         ])
+        .then((response) => {
+            db.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?), [employee.first_name, employee.last_name, employee.role_id, employee.manager_id]")
+            console.table(response);
+        })
+        startMenu();
 };
 
 //updateEmployee to update their new role & adds it to the database 
@@ -167,4 +182,8 @@ function updateEmployee() {
 
 };
 
-startMenu();
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    startMenu();
+  });
