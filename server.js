@@ -22,18 +22,16 @@ const db = mysql.createConnection(
     console.log(`Connected to the employeetracker_db database.`)
 );
 
-function firstQuestion {
-    inquirer
-        .prompt =
-        [
-            {
-                type: 'list',
-                message: 'What would you like to do?',
-                name: 'options',
-                choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add Department', 'Add Role', 'Add Employee', 'Update Employee', 'Quit'],
-            },
-        ]
-}
+const question =
+    [
+        {
+            type: 'list',
+            message: 'What would you like to do?',
+            name: 'options',
+            choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add Department', 'Add Role', 'Add Employee', 'Update Employee', 'Quit'],
+        },
+    ]
+
 
 //Using switch statement
 function trackerChoice(response) {
@@ -68,7 +66,7 @@ function trackerChoice(response) {
 
 //allDepartments presents a table with department names & department ids
 function allDepartments() {
-    db.query('SELECT * FROM department', function (err, results) {
+    db.query("SELECT * FROM department", function (err, results) {
         console.table(results);
         res.status(200).json(results);
     });
@@ -76,7 +74,7 @@ function allDepartments() {
 
 //allRoles presents a table with job title, role id, dept the role belongs to & the salary for the role
 function allRoles() {
-    db.query('SELECT * FROM roles', function (err, results) {
+    db.query("SELECT * FROM roles", function (err, results) {
         console.table(results);
         res.status(200).json(results);
     });
@@ -99,62 +97,65 @@ function addDepartment() {
                 message: 'What is the department name?',
                 name: 'deptname',
             },
-
         ])
+        .then((answer) => {
+            const newDept = answer;
+            db.query("INSERT INTO department ('name') VALUES ?", newDept, function (err, res))
+        })
 };
 
 
-//addRole - prompt to enter name, salary & department for the role & adds it to the database
-function addRole() {
-    inquirer
-        .prompt([
-            {
-                type: 'input',
-                message: 'What is the name of the role?',
-                name: 'title',
-            },
-            {
-                type: 'input',
-                message: 'What is the salary of the role?',
-                name: 'salary',
-            },
-            {
-                type: 'input',
-                message: 'To which department does the role belong?',
-                name: 'department_id',
-            },
-        ])
-};
+    //addRole - prompt to enter name, salary & department for the role & adds it to the database
+    function addRole() {
+        inquirer
+            .prompt([
+                {
+                    type: 'input',
+                    message: 'What is the name of the role?',
+                    name: 'title',
+                },
+                {
+                    type: 'input',
+                    message: 'What is the salary of the role?',
+                    name: 'salary',
+                },
+                {
+                    type: 'input',
+                    message: 'To which department does the role belong?',
+                    name: 'department_id',
+                },
+            ])
+    };
 
-//addEmployee - prompt to enter employee first & last names, role, manager and adds it to the database
-function addEmployee() {
-    inquirer
-        .prompt([
-            {
-                type: 'input',
-                message: 'What is the first name of the employee?',
-                name: 'first_name',
-            },
-            {
-                type: 'input',
-                message: 'What is the last name of the employee?',
-                name: 'last_name',
-            },
-            {
-                type: 'input',
-                message: 'What is their role?',
-                name: 'role_id',
-            },
-            {
-                type: 'input',
-                message: 'What is the manager for the role?',
-                name: 'manager_id',
-            },
-        ])
-};
+    //addEmployee - prompt to enter employee first & last names, role, manager and adds it to the database
+    function addEmployee() {
+        inquirer
+            .prompt([
+                {
+                    type: 'input',
+                    message: 'What is the first name of the employee?',
+                    name: 'first_name',
+                },
+                {
+                    type: 'input',
+                    message: 'What is the last name of the employee?',
+                    name: 'last_name',
+                },
+                {
+                    type: 'input',
+                    message: 'What is their role?',
+                    name: 'role_id',
+                },
+                {
+                    type: 'input',
+                    message: 'What is the manager for the role?',
+                    name: 'manager_id',
+                },
+            ])
+    };
 
-//updateEmployee to update their new role & adds it to the database 
-function updateEmployee() {
+    //updateEmployee to update their new role & adds it to the database 
+    function updateEmployee() {
 
-};
+    };
 
