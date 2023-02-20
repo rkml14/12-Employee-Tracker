@@ -32,19 +32,18 @@ ASK BCS:
     SELECT all of the stuff you need AS department, role.salary CONCAT(the managers name together) AS manager FROM employee LEFT JOIN role on (wherever that makes sense to id the employee you want) = that id LEFT JOIN department on another id = etc et
   
   
-  
-  SELECT 
-  employee.id,
-  employee.first_name,
-  employee.last_name,
-  roles.title,
-  department.name AS Department,
-  roles.salary,
-  CONCAT(manager.first_name,' ', manager.last_name) AS Manager,
-  FROM employee
-  LEFT JOIN roles ON employee.role_id = roles.id  
-  LEFT JOIN department on roles.department_id = department.id
-  LEFT JOIN employee AS Manager on employee.manager_id = manager.id;
+SELECT 
+employee.id,
+employee.first_name,
+employee.last_name,
+roles.title,
+department.name AS Department,
+roles.salary,
+CONCAT(manager.first_name,' ', manager.last_name) AS manager,
+FROM employee
+LEFT JOIN roles ON employee.role_id = roles.id  
+LEFT JOIN department ON roles.department_id = department.id
+LEFT JOIN employee AS manager ON employee.manager_id = manager.id;
 
 
 
