@@ -35,7 +35,7 @@ function startMenu() {
             ])
         .then()
     //Using switch statement to pass the chosen option from above 
-      switch (response.options) {
+    switch (response.options) {
         case 'View All Departments':
             allDepartments();
             break;
@@ -69,6 +69,7 @@ function allDepartments() {
     db.query("SELECT * FROM department", function (err, results) {
         console.table(results);
         res.status(200).json(results);
+        startMenu();
     });
 };
 
@@ -77,6 +78,7 @@ function allRoles() {
     db.query("SELECT * FROM roles", function (err, results) {
         console.table(results);
         res.status(200).json(results);
+        startMenu();
     });
 };
 
@@ -85,6 +87,7 @@ function allEmployees() {
     db.query("SELECT employee.id, employee.first_name, employee.last_name, roles.title, department.name AS Department, roles.salary, CONCAT(manager.first_name,' ', manager.last_name) AS manager  FROM employee  JOIN roles ON employee.role_id = roles.id JOIN department ON roles.department_id = department.id LEFT JOIN employee AS manager ON employee.manager_id = manager.id;", function (err, results) {
         console.table(results);
         res.status(200).json(results);
+        startMenu();
     });
 };
 
@@ -94,15 +97,19 @@ function addDepartment() {
         .prompt([
             {
                 type: 'input',
-                message: 'What is the department name?',
+                message: 'What is the new department name?',
                 name: 'deptname',
             },
         ])
         .then((answer) => {
             const newDept = answer;
-            db.query("INSERT INTO department ('name') VALUES ?", newDept, function (err, res))
+            db.query("INSERT INTO department ('name') VALUES ?", newDept, function (err, res) {
+                console.log(`${newDept} has been added to the database.`);
+                startMenu();
+            })
         })
 };
+
 
 
 //addRole - prompt to enter name, salary & department for the role & adds it to the database
