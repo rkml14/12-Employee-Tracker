@@ -23,16 +23,16 @@ const db = mysql.createConnection(
 );
 
 function firstQuestion {
-inquirer
-.prompt =
-    [
-        {
-            type: 'list',
-            message: 'What would you like to do?',
-            name: 'options',
-            choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add Department', 'Add Role', 'Add Employee', 'Update Employee', 'Quit'],
-        },
-    ]
+    inquirer
+        .prompt =
+        [
+            {
+                type: 'list',
+                message: 'What would you like to do?',
+                name: 'options',
+                choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add Department', 'Add Role', 'Add Employee', 'Update Employee', 'Quit'],
+            },
+        ]
 }
 
 //Using switch statement
@@ -62,7 +62,7 @@ function trackerChoice(response) {
         case 'Quit':  //might need something to actually end the program.  This just ends the switch statement
             console.log("Thank you, the program will now end.");
             process.exit(code);
-   
+
     }
 };
 
@@ -71,7 +71,7 @@ function allDepartments() {
     db.query('SELECT * FROM department', function (err, results) {
         console.table(results);
         res.status(200).json(results);
-      });
+    });
 };
 
 //allRoles presents a table with job title, role id, dept the role belongs to & the salary for the role
@@ -79,22 +79,15 @@ function allRoles() {
     db.query('SELECT * FROM roles', function (err, results) {
         console.table(results);
         res.status(200).json(results);
-      });
+    });
 };
 
 //allEmployees presents a table with employee id, first & last names, job titles, departments, salaries & managers the employee reports to
 function allEmployees() {
-
-
-
-
-
-
-    
-    db.query('SELECT employee.id, employee.first_name, employee.last_name, employee.manager_id, roles.title, roles.salaryFROM employee JOIN roles ON employee = roles.role_id;', function (err, results) {
+    db.query("SELECT employee.id, employee.first_name, employee.last_name, roles.title, department.name AS Department, roles.salary, CONCAT(manager.first_name,' ', manager.last_name) AS manager  FROM employee  JOIN roles ON employee.role_id = roles.id JOIN department ON roles.department_id = department.id LEFT JOIN employee AS manager ON employee.manager_id = manager.id;", function (err, results) {
         console.table(results);
         res.status(200).json(results);
-      });
+    });
 };
 
 //addDepartment - prompt to enter the name of the depart & adds it to the database
