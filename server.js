@@ -11,13 +11,12 @@ const db = mysql.createConnection(
         password: '',
         database: 'employeetracker_db'
     },
-    console.log(`Connected to the employeetracker_db database.`)
 );
 
-db.connect(function(err){
+db.connect(function (err) {
     if (err) throw err
     startMenu();
-  })
+})
 
 
 
@@ -34,37 +33,36 @@ function startMenu() {
                     choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add Department', 'Add Role', 'Add Employee', 'Update Employee', 'Quit'],
                 },
             ])
-        .then(function(response){
-            console.log("You selecteed: " + response.options)
+        .then(function (response) {
+            console.log("You selected: " + response.options)
+            //Using switch statement to pass the chosen option from above 
+            switch (response.options) {
+                case 'View All Departments':
+                    allDepartments();
+                    break;
+                case 'View All Roles':
+                    allRoles();
+                    break;
+                case 'View All Employees':
+                    allEmployees();
+                    break;
+                case 'Add Department':
+                    addDepartment();
+                    break;
+                case 'Add Role':
+                    addRole();
+                    break;
+                case 'Add Employee':
+                    addEmployee();
+                    break;
+                case 'Update Employee':
+                    updateEmployee();
+                    break;
+                case 'Quit':  //might need something to actually end the program.  This just ends the switch statement
+                    console.log("Thank you for using Employee Tracker");
+                    process.exit(code);
+            }
         })
-    //Using switch statement to pass the chosen option from above 
-    switch (response.options) {
-        case 'View All Departments':
-            allDepartments();
-            break;
-        case 'View All Roles':
-            allRoles();
-            break;
-        case 'View All Employees':
-            allEmployees();
-            break;
-        case 'Add Department':
-            addDepartment();
-            break;
-        case 'Add Role':
-            addRole();
-            break;
-        case 'Add Employee':
-            addEmployee();
-            break;
-        case 'Update Employee':
-            updateEmployee();
-            break;
-        case 'Quit':  //might need something to actually end the program.  This just ends the switch statement
-            console.log("Thank you, the program will now end.");
-            process.exit(code);
-
-    }
 }
 
 //allDepartments presents a table with department names & department ids
@@ -139,7 +137,7 @@ function addRole() {
             db.query("INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?), [role.title, role.salary, role.department_id]")
             console.table(response);
         })
-        startMenu();
+    startMenu();
 };
 
 
@@ -177,7 +175,7 @@ function addEmployee() {
             db.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?), [employee.first_name, employee.last_name, employee.role_id, employee.manager_id]")
             console.table(response);
         })
-        startMenu();
+    startMenu();
 };
 
 //updateEmployee to update their new role & adds it to the database 
