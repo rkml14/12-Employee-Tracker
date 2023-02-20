@@ -3,12 +3,12 @@ const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const console = require('console.table');
 
-
+//mySQL connection 
 const db = mysql.createConnection(
     {
         host: 'localhost',
         user: 'root',
-        password: 'Purr2023thos!',
+        password: '',
         database: 'employeetracker_db'
     },
     console.log(`Connected to the employeetracker_db database.`)
