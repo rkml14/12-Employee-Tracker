@@ -132,6 +132,7 @@ function addRole() {
                 name: 'department_id',
             },
         ])
+        .then()
 };
 
 //addEmployee - prompt to enter employee first & last names, role, manager and adds it to the database
