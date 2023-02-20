@@ -1,16 +1,8 @@
 //libraries 
-const express = require('express');
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
-const cTable = require('console.table');
+const console = require('console.table');
 
-const PORT = process.env.PORT || 3001;
-const app = express();
-
-//middleware 
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
-app.use(express.static('public'));
 
 const db = mysql.createConnection(
     {
@@ -21,6 +13,15 @@ const db = mysql.createConnection(
     },
     console.log(`Connected to the employeetracker_db database.`)
 );
+
+db.connect(function(err){
+    if (err) throw err
+    startMenu();
+  })
+
+
+
+
 
 function startMenu() {
     inquirer
@@ -33,7 +34,9 @@ function startMenu() {
                     choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add Department', 'Add Role', 'Add Employee', 'Update Employee', 'Quit'],
                 },
             ])
-        .then()
+        .then(function(response){
+            console.log("You selecteed: " + response.options)
+        })
     //Using switch statement to pass the chosen option from above 
     switch (response.options) {
         case 'View All Departments':
@@ -75,7 +78,7 @@ function allDepartments() {
 
 //allRoles presents a table with job title, role id, dept the role belongs to & the salary for the role
 function allRoles() {
-    db.query("SELECT * FROM roles", function (err, results) {
+    db.query("SELECT * FROM role", function (err, results) {
         console.table(results);
         res.status(200).json(results);
         startMenu();
@@ -84,7 +87,7 @@ function allRoles() {
 
 //allEmployees presents a table with employee id, first & last names, job titles, departments, salaries & managers the employee reports to
 function allEmployees() {
-    db.query("SELECT employee.id, employee.first_name, employee.last_name, roles.title, department.name AS Department, roles.salary, CONCAT(manager.first_name,' ', manager.last_name) AS manager  FROM employee  JOIN roles ON employee.role_id = roles.id JOIN department ON roles.department_id = department.id LEFT JOIN employee AS manager ON employee.manager_id = manager.id;", function (err, results) {
+    db.query("SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS Department, role.salary, CONCAT(manager.first_name,' ', manager.last_name) AS manager  FROM employee  JOIN roles ON employee.role_id = role.id JOIN department ON role.department_id = department.id LEFT JOIN employee AS manager ON employee.manager_id = manager.id;", function (err, results) {
         console.table(results);
         res.status(200).json(results);
         startMenu();
@@ -133,7 +136,7 @@ function addRole() {
             },
         ])
         .then((response) => {
-            db.query("INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?), [roles.title, roles.salary, roles.department_id]")
+            db.query("INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?), [role.title, role.salary, role.department_id]")
             console.table(response);
         })
         startMenu();
@@ -182,8 +185,5 @@ function updateEmployee() {
 
 };
 
+startMenu();
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    startMenu();
-  });
