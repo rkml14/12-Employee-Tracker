@@ -54,7 +54,7 @@ function startMenu(isStartUp) {
                     break;
                 case 'Add Role':
                     addRole();
-                break;
+                    break;
                 case 'Add Employee':
                     addEmployee();
                     break;
@@ -166,7 +166,7 @@ function addRole() {
 
             //Make object & pull the properties from it
             let { title, salary, department_id } = response
-            const department = department_id.split(" "); 
+            const department = department_id.split(" ");
 
             db.query("INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)", [title, salary, parseInt(department[0])], function (err, results) {
                 if (err) {
@@ -229,30 +229,63 @@ function updateEmployee() {
     inquirer
         .prompt([
             {
-                type: 'input',
+                type: 'list',
                 message: 'Which employee do you wish to update?',
                 name: 'employeeName',
+                choices: async function returnMe() {
+                    function toReturn() {
+                        return new Promise((resolve, reject) => {
+                            db.query("Select CONCAT(first_name,' ',last_name) AS employee FROM employee", (err, res) => {
+                                if (err) reject();
+                                const arr = res.map(r => r.employee);
+                                resolve(arr);
+                            });
+                        })
+                    }
+                    let data = toReturn();
+                    return data;
+                },
             },
             {
-                type: 'input',
+                type: 'list',
                 message: 'What is the new role?',
                 name: 'newRole',
+                choices: async function returnMe() {
+                    function toReturn() {
+                        return new Promise((resolve, reject) => {
+                            db.query("Select CONCAT(id,' ',title) as title FROM role", (err, res) => {
+                                if (err) reject();
+                                const arr = res.map(r => r.role);
+                                resolve(arr);
+                            });
+                        })
+                    }
+                    let data = toReturn();
+                    return data;
+                },
             },
         ])
         .then((response) => {
             let { employeeName, newRole } = response
-            db.query("UPDATE employee SET role_id = ? WHERE first_name = ?", [newRole, employeeName], function (err, results) {
+            const employee = employeeName.split(" ");
+            const role = newRole.split(" ");
+            db.query("UPDATE employee SET role_id = ? WHERE first_name = ?", [(employee[0]), parseInt(role[0])], function (err, results) {
                 if (err) {
                     console.log(err)
                     process.exit(1);
                 }
+                console.log(typeof employee)
+                console.log(employee)
+                console.log(typeof employee[0], Number(employee[0]))
+                console.log(typeof role)
+                console.log(role)
+                console.log(typeof role[0], Number(role[0]))
                 console.log('Employee has been updated')
                 startMenu();
             })
         })
 
 };
-
 
 
 
