@@ -1,31 +1,34 @@
 //libraries 
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
-const console = require('console.table');
+require('console.table');
 
 //mySQL connection 
 const db = mysql.createConnection(
     {
         host: 'localhost',
         user: 'root',
-        password: '',
+        password: 'Purr2023thos!',
         database: 'employeetracker_db'
     },
 );
-
+//Database connection
 db.connect(function (err) {
     if (err) throw err
-    startMenu();
+    startMenu(true);
 })
 
-
-
-
-
-function startMenu() {
+//Function to ask the main list of questions
+function startMenu(isStartUp) {
     inquirer
         .prompt(
             [
+                {
+                    type: 'input',
+                    message: 'Press any key to continue',
+                    name: 'continue',
+                    when: (!isStartUp),
+                },
                 {
                     type: 'list',
                     message: 'What would you like to do?',
@@ -60,7 +63,7 @@ function startMenu() {
                     break;
                 case 'Quit':  //might need something to actually end the program.  This just ends the switch statement
                     console.log("Thank you for using Employee Tracker");
-                    process.exit(code);
+                    process.exit(0);
             }
         })
 }
@@ -68,8 +71,11 @@ function startMenu() {
 //allDepartments presents a table with department names & department ids
 function allDepartments() {
     db.query("SELECT * FROM department", function (err, results) {
+        if (err) {
+            console.log(err)
+            process.exit(1);
+        }
         console.table(results);
-        res.status(200).json(results);
         startMenu();
     });
 };
@@ -77,18 +83,25 @@ function allDepartments() {
 //allRoles presents a table with job title, role id, dept the role belongs to & the salary for the role
 function allRoles() {
     db.query("SELECT * FROM role", function (err, results) {
+        if (err) {
+            console.log(err)
+            process.exit(1);
+        }
         console.table(results);
-        res.status(200).json(results);
         startMenu();
     });
 };
 
 //allEmployees presents a table with employee id, first & last names, job titles, departments, salaries & managers the employee reports to
 function allEmployees() {
-    db.query("SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS Department, role.salary, CONCAT(manager.first_name,' ', manager.last_name) AS manager  FROM employee  JOIN roles ON employee.role_id = role.id JOIN department ON role.department_id = department.id LEFT JOIN employee AS manager ON employee.manager_id = manager.id;", function (err, results) {
+    db.query("SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS Department, role.salary, CONCAT(manager.first_name,' ', manager.last_name) AS manager  FROM employee  JOIN role ON employee.role_id = role.id JOIN department ON role.department_id = department.id LEFT JOIN employee AS manager ON employee.manager_id = manager.id;", function (err, results) {
+        if (err) {
+            console.log(err)
+            process.exit(1);
+        }
         console.table(results);
-        res.status(200).json(results);
         startMenu();
+
     });
 };
 
@@ -103,15 +116,17 @@ function addDepartment() {
             },
         ])
         .then((answer) => {
-            const newDept = answer;
-            db.query("INSERT INTO department ('name') VALUES ?", newDept, function (err, res) {
+            const newDept = answer.deptname;
+            db.query("INSERT INTO department (name) VALUES (?)", newDept, function (err, res) {
+                if (err) {
+                    console.log(err)
+                    process.exit(1);
+                }
                 console.log(`${newDept} has been added to the database.`);
                 startMenu();
             })
         })
 };
-
-
 
 //addRole - prompt to enter name, salary & department for the role & adds it to the database
 function addRole() {
@@ -134,16 +149,18 @@ function addRole() {
             },
         ])
         .then((response) => {
-            db.query("INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?), [role.title, role.salary, role.department_id]")
-            console.table(response);
+            //Make object & pull the properties from it
+            let { title, salary, department_id } = response
+            db.query("INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)", [title, salary, department_id], function (err, results) {
+                if (err) {
+                    console.log(err)
+                    process.exit(1);
+                }
+                console.log('Role has been added')
+                startMenu();
+            })
         })
-    startMenu();
 };
-
-
-
-
-
 
 
 //addEmployee - prompt to enter employee first & last names, role, manager and adds it to the database
@@ -172,16 +189,24 @@ function addEmployee() {
             },
         ])
         .then((response) => {
-            db.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?), [employee.first_name, employee.last_name, employee.role_id, employee.manager_id]")
-            console.table(response);
+            let { first_name, last_name, role_id, manager_id } = response
+            db.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)", [first_name, last_name, role_id, manager_id], function (err, results) {
+                if (err) {
+                    console.log(err)
+                    process.exit(1);
+                }
+                console.log('Employee has been added')
+                startMenu();
+            })
         })
-    startMenu();
-};
+}
+
 
 //updateEmployee to update their new role & adds it to the database 
 function updateEmployee() {
 
 };
 
-startMenu();
+
+
 
