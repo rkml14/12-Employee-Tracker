@@ -54,7 +54,7 @@ function startMenu(isStartUp) {
                     break;
                 case 'Add Role':
                     addRole();
-                    break;
+                break;
                 case 'Add Employee':
                     addEmployee();
                     break;
@@ -128,19 +128,9 @@ function addDepartment() {
         })
 };
 
-//trying to add the department list from the database to the AddRole under dept list
-function deptChoices() {
-db.query("SELECT ID  AS value, name FROM department", function (err, results ) {
-    if (err) {
-        console.log(err)
-        process.exit(1);
-    }
-    return department[0];
-})}
-
 //addRole - prompt to enter name, salary & department for the role & adds it to the database
 function addRole() {
-        inquirer
+    inquirer
         .prompt([
             {
                 type: 'input',
@@ -156,11 +146,23 @@ function addRole() {
                 type: 'list',
                 message: 'To which department ID does the role belong?',
                 name: 'department_id',
-                choices: deptChoices(),
+                choices: async function returnMe() {
+                    function toReturn() {
+                        return new Promise((resolve, reject) => {
+                            db.query("Select CONCAT(id,' ',name) as department FROM department", (err, res) => {
+                                if (err) reject();
+                                const arr = res.map(r => r.department);
+                                resolve(arr);
+                            });
+                        })
+                    }
+                    let data = toReturn();
+                    return data;
+                },
             },
         ])
         .then((response) => {
-            
+
             //Make object & pull the properties from it
             let { title, salary, department_id } = response
             db.query("INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)", [title, salary, department_id], function (err, results) {
@@ -171,7 +173,7 @@ function addRole() {
                 console.log('Role has been added')
                 startMenu();
             })
-                    })
+        })
         .catch((err) => console.log(err));
 };
 
@@ -232,7 +234,7 @@ function updateEmployee() {
         ])
         .then((response) => {
             let { employeeName, newRole } = response
-            db.query("UPDATE employee SET role_id = ? WHERE first_name = ?",  [newRole, employeeName], function (err, results) {
+            db.query("UPDATE employee SET role_id = ? WHERE first_name = ?", [newRole, employeeName], function (err, results) {
                 if (err) {
                     console.log(err)
                     process.exit(1);
