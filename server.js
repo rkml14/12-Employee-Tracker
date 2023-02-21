@@ -204,6 +204,30 @@ function addEmployee() {
 
 //updateEmployee to update their new role & adds it to the database 
 function updateEmployee() {
+    inquirer
+        .prompt([
+            {
+                type: 'input',
+                message: 'Which employee do you wish to update?',
+                name: 'employeeName',
+            },
+            {
+                type: 'input',
+                message: 'What is the new role?',
+                name: 'newRole',
+            },
+        ])
+        .then((response) => {
+            let { first_name, last_name, role_id, manager_id } = response
+            db.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)", [first_name, last_name, role_id, manager_id], function (err, results) {
+                if (err) {
+                    console.log(err)
+                    process.exit(1);
+                }
+                console.log('Employee has been added')
+                startMenu();
+            })
+        })
 
 };
 
