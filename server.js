@@ -1,4 +1,4 @@
-//libraries 
+//Required libraries 
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
 require('console.table');
@@ -106,7 +106,7 @@ function allEmployees() {
     });
 };
 
-//addDepartment - prompt to enter the name of the depart & adds it to the database
+//addDepartment - prompts to enter the name of the depart & adds it to the database
 function addDepartment() {
     inquirer
         .prompt([
@@ -123,61 +123,54 @@ function addDepartment() {
                     console.log(err)
                     process.exit(1);
                 }
-                console.log(`${newDept} has been added to the database.`);
+                console.log(`New department ${newDept} has been added to the database.`);
                 startMenu();
             })
         })
 };
 
-//addRole - prompt to enter name, salary & department for the role & adds it to the database
+//addRole - prompts to enter the name, salary & department for the role & adds it to the database
 function addRole() {
-    inquirer
-        .prompt([
-            {
-                type: 'input',
-                message: 'What is the name of the role?',
-                name: 'title',
-            },
-            {
-                type: 'input',
-                message: 'What is the salary of the role?',
-                name: 'salary',
-            },
-            {
-                type: 'list',
-                message: 'To which department ID does the role belong?',
-                name: 'department_id',
-                choices: async function returnMe() {
-                    function toReturn() {
-                        return new Promise((resolve, reject) => {
-                            db.query("Select CONCAT(id,' ',name) as department FROM department", (err, res) => {
-                                if (err) reject();
-                                const arr = res.map(r => r.department);
-                                resolve(arr);
-                            });
-                        })
-                    }
-                    let data = toReturn();
-                    return data;
-                },
-            },
-        ])
-        .then((response) => {
-
-            //Make object & pull the properties from it
-            let { title, salary, department_id } = response
-            const department = department_id.split(" ");
-
-            db.query("INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)", [title, salary, parseInt(department[0])], function (err, results) {
-                if (err) {
-                    console.log(err)
-                    process.exit(1);
+    db.query('SELECT * FROM department', function (err, res) {
+        //Name displays to the user in the inquirer prompt, value is being returned in the response to be used in the SQL query to add role    
+        const deptNames = res.map(role => {
+            return (
+                {
+                    name: role.name,
+                    value: role.id
                 }
-                console.log('Role has been added')
-                startMenu();
-            })
+            )
         })
-        .catch((err) => console.log(err));
+        inquirer
+            .prompt([
+                {
+                    type: 'input',
+                    message: 'What is the name of the role?',
+                    name: 'title',
+                },
+                {
+                    type: 'input',
+                    message: 'What is the salary of the role?',
+                    name: 'salary',
+                },
+                {
+                    type: 'list',
+                    message: 'What department does this role belong to?',
+                    name: 'department_id',
+                    choices: deptNames,
+                },
+            ]).then(function (reply) {
+                const role = {
+                    title: reply.title,
+                    salary: reply.salary,
+                    department_id: reply.department_id
+                }
+                db.query("INSERT INTO role SET ?", role, function (err, res) {
+                    console.log(`New role ${reply.title} has been added`);
+                    startMenu();
+                });
+            })
+    })
 };
 
 
