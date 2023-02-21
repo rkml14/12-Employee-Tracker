@@ -82,7 +82,7 @@ function allDepartments() {
 
 //allRoles presents a table with job title, role id, dept the role belongs to & the salary for the role
 function allRoles() {
-    db.query("SELECT role.id, role.title, role.salary, department.name FROM role LEFT JOIN department on role.department_id=department.id", function (err, results) {
+    db.query("SELECT role.id, role.title, role.salary, department.name FROM role LEFT JOIN department ON role.department_id=department.id;", function (err, results) {
         if (err) {
             console.log(err)
             process.exit(1);
@@ -176,6 +176,27 @@ function addRole() {
 
 //addEmployee - prompt to enter employee first & last names, role, manager and adds it to the database
 function addEmployee() {
+    db.query('SELECT employee.role_id, role.title FROM employee LEFT JOIN role on ON employee.role_id=role.id;', function (err, res) {
+        const jobNames = res.map(role => {
+            return (
+                {
+                    name: role.title,
+                    value: employee.role_id
+                }
+            )
+        })
+    })
+    db.query("CONCAT(manager.first_name,' ', manager.last_name) AS manager  FROM employee;", function (err, res) {
+        const managerList = res.map(role => {
+            return (
+                {
+                    name: employee.first_name + ' ' + employee.last_name,
+                    value: employee.last_name,
+                }
+            )
+        })
+    })
+   
     inquirer
         .prompt([
             {
@@ -189,14 +210,16 @@ function addEmployee() {
                 name: 'last_name',
             },
             {
-                type: 'input',
-                message: 'What is their role ID?',
+                type: 'list',
+                message: 'What is their role name?',
                 name: 'role_id',
+                choices: jobNames,
             },
             {
-                type: 'input',
-                message: 'What is the manager ID for the role?',
+                type: 'list',
+                message: 'Who is the manager for the role?',
                 name: 'manager_id',
+                choices: managerList,
             },
         ])
         .then((response) => {
@@ -211,6 +234,7 @@ function addEmployee() {
             })
         })
 }
+
 
 
 
