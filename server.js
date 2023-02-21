@@ -173,10 +173,6 @@ function addRole() {
                     console.log(err)
                     process.exit(1);
                 }
-                //Testing to make sure my department_id worked, showing type, and if the array split correctly 
-                // console.log(typeof department_id)
-                // console.log(department)
-                // console.log(typeof department[0], Number(department[0]))
                 console.log('Role has been added')
                 startMenu();
             })
@@ -224,67 +220,56 @@ function addEmployee() {
 }
 
 
-//updateEmployee to update their new role & adds it to the database 
-function updateEmployee() {
-    inquirer
-        .prompt([
-            {
-                type: 'list',
-                message: 'Which employee do you wish to update?',
-                name: 'employeeName',
-                choices: async function returnMe() {
-                    function toReturn() {
-                        return new Promise((resolve, reject) => {
-                            db.query("Select CONCAT(first_name,' ',last_name) AS employee FROM employee", (err, res) => {
-                                if (err) reject();
-                                const arr = res.map(r => r.employee);
-                                resolve(arr);
-                            });
-                        })
-                    }
-                    let data = toReturn();
-                    return data;
-                },
-            },
-            {
-                type: 'list',
-                message: 'What is the new role?',
-                name: 'newRole',
-                choices: async function returnMe() {
-                    function toReturn() {
-                        return new Promise((resolve, reject) => {
-                            db.query("Select CONCAT(id,' ',title) as title FROM role", (err, res) => {
-                                if (err) reject();
-                                const arr = res.map(r => r.role);
-                                resolve(arr);
-                            });
-                        })
-                    }
-                    let data = toReturn();
-                    return data;
-                },
-            },
-        ])
-        .then((response) => {
-            let { employeeName, newRole } = response
-            const employee = employeeName.split(" ");
-            const role = newRole.split(" ");
-            db.query("UPDATE employee SET role_id = ? WHERE first_name = ?", [(employee[0]), parseInt(role[0])], function (err, results) {
-                if (err) {
-                    console.log(err)
-                    process.exit(1);
-                }
-                console.log(typeof employee)
-                console.log(employee)
-                console.log(typeof employee[0], Number(employee[0]))
-                console.log(typeof role)
-                console.log(role)
-                console.log(typeof role[0], Number(role[0]))
-                console.log('Employee has been updated')
-                startMenu();
-            })
-        })
 
+//updateEmployee to update their new role & adds it to the database
+function updateEmployee() {
+    db.query('SELECT * FROM employee', function (err, res) {
+        //Name displays to the user in the inquirer prompt, value is being returned in the response to be used in the SQL query to update employee role
+        const employUpdate = res.map(employee => {
+            return (
+                {
+                    name: employee.first_name + ' ' + employee.last_name,
+                    value: employee.last_name,
+                })
+        })
+        //Name displays to the user in the inquirer prompt, value is being returned in the response to be used in the SQL query to update employee role
+        db.query('SELECT * FROM role', function (err, res) {
+            const roleUpdate = res.map(role => {
+                return (
+                    {
+                        name: role.title,
+                        value: role.id,
+                    })
+            })
+
+            inquirer
+                .prompt([
+                    {
+                        type: "list",
+                        message: "Which employee are you updating?",
+                        name: "employee",
+                        choices: employUpdate
+                    },
+                    {
+                        type: "list",
+                        message: "What do you want to update the role to?",
+                        name: 'role',
+                        choices: roleUpdate
+                    }
+                ])
+                .then((response) => {
+                    let { employee, role } = response;
+                    db.query("UPDATE employee SET role_id = ? WHERE last_name = ?", [role, employee], function (err, res) {
+                        if (err) {
+                            console.log(err)
+                            process.exit(1);
+                        }
+                        console.log('Employee updated!')
+                        startMenu();
+                    })
+                })
+        })
+    })
 };
 
 
