@@ -82,7 +82,7 @@ function allDepartments() {
 
 //allRoles presents a table with job title, role id, dept the role belongs to & the salary for the role
 function allRoles() {
-    db.query("SELECT role.id, role.title, department.name AS department, role.salary FROM role JOIN department ON role.id = department.id;", function (err, results) {
+    db.query("SELECT role.id, role.title, role.salary, department.name FROM role LEFT JOIN department on role.department_id=department.id", function (err, results) {
         if (err) {
             console.log(err)
             process.exit(1);
@@ -91,6 +91,7 @@ function allRoles() {
         startMenu();
     });
 };
+
 
 //allEmployees presents a table with employee id, first & last names, job titles, departments, salaries & managers the employee reports to
 function allEmployees() {
@@ -165,11 +166,17 @@ function addRole() {
 
             //Make object & pull the properties from it
             let { title, salary, department_id } = response
-            db.query("INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)", [title, salary, department_id], function (err, results) {
+            const department = department_id.split(" "); 
+
+            db.query("INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)", [title, salary, parseInt(department[0])], function (err, results) {
                 if (err) {
                     console.log(err)
                     process.exit(1);
                 }
+                //Testing to make sure my department_id worked, showing type, and if the array split correctly 
+                // console.log(typeof department_id)
+                // console.log(department)
+                // console.log(typeof department[0], Number(department[0]))
                 console.log('Role has been added')
                 startMenu();
             })
