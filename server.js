@@ -187,7 +187,7 @@ function addEmployee() {
         })
     })
     db.query("CONCAT(manager.first_name,' ', manager.last_name) AS manager  FROM employee;", function (err, res) {
-        const managerList = res.map(role => {
+        const managerList = res.map(employee => {
             return (
                 {
                     name: employee.first_name + ' ' + employee.last_name,
