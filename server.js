@@ -82,7 +82,7 @@ function allDepartments() {
 
 //allRoles presents a table with job title, role id, dept the role belongs to & the salary for the role
 function allRoles() {
-    db.query("SELECT * FROM role", function (err, results) {
+    db.query("SELECT role.id, role.title, department.name AS department, role.salary FROM role JOIN department ON role.id = department.id;", function (err, results) {
         if (err) {
             console.log(err)
             process.exit(1);
@@ -218,13 +218,13 @@ function updateEmployee() {
             },
         ])
         .then((response) => {
-            let { first_name, last_name, role_id, manager_id } = response
-            db.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)", [first_name, last_name, role_id, manager_id], function (err, results) {
+            let { employeeName, newRole } = response
+            db.query("UPDATE employee SET role_id = ? WHERE first_name = ?",  [newRole, employeeName], function (err, results) {
                 if (err) {
                     console.log(err)
                     process.exit(1);
                 }
-                console.log('Employee has been added')
+                console.log('Employee has been updated')
                 startMenu();
             })
         })
