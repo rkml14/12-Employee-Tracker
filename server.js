@@ -160,6 +160,7 @@ function addRole() {
             },
         ])
         .then((response) => {
+            
             //Make object & pull the properties from it
             let { title, salary, department_id } = response
             db.query("INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)", [title, salary, department_id], function (err, results) {
@@ -170,7 +171,8 @@ function addRole() {
                 console.log('Role has been added')
                 startMenu();
             })
-        })
+                    })
+        .catch((err) => console.log(err));
 };
 
 
