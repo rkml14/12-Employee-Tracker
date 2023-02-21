@@ -128,6 +128,7 @@ function addDepartment() {
         })
 };
 
+//trying to add the department list from the database to the AddRole under dept list
 function deptChoices() {
 db.query("SELECT ID  AS value, name FROM department", function (err, results ) {
     if (err) {
@@ -139,10 +140,7 @@ db.query("SELECT ID  AS value, name FROM department", function (err, results ) {
 
 //addRole - prompt to enter name, salary & department for the role & adds it to the database
 function addRole() {
-    
-
-
-    inquirer
+        inquirer
         .prompt([
             {
                 type: 'input',
@@ -217,6 +215,30 @@ function addEmployee() {
 
 //updateEmployee to update their new role & adds it to the database 
 function updateEmployee() {
+    inquirer
+        .prompt([
+            {
+                type: 'input',
+                message: 'Which employee do you wish to update?',
+                name: 'employeeName',
+            },
+            {
+                type: 'input',
+                message: 'What is the new role?',
+                name: 'newRole',
+            },
+        ])
+        .then((response) => {
+            let { employeeName, newRole } = response
+            db.query("UPDATE employee SET role_id = ? WHERE first_name = ?",  [newRole, employeeName], function (err, results) {
+                if (err) {
+                    console.log(err)
+                    process.exit(1);
+                }
+                console.log('Employee has been updated')
+                startMenu();
+            })
+        })
 
 };
 
