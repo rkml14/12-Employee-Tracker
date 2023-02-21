@@ -244,8 +244,9 @@ function addEmployee() {
             return (
                 {
                     name: role.title,
-                    value: employee.role_id
+                    value: employee.role_id,
                 })
+            })
             inquirer
                 .prompt([
                     {
@@ -296,8 +297,7 @@ function addEmployee() {
                     })
                 })
         })
-    })
-};
+    };
 
 
 
