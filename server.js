@@ -128,8 +128,20 @@ function addDepartment() {
         })
 };
 
+function deptChoices() {
+db.query("SELECT ID  AS value, name FROM department", function (err, results ) {
+    if (err) {
+        console.log(err)
+        process.exit(1);
+    }
+    return department[0];
+})}
+
 //addRole - prompt to enter name, salary & department for the role & adds it to the database
 function addRole() {
+    
+
+
     inquirer
         .prompt([
             {
@@ -143,9 +155,10 @@ function addRole() {
                 name: 'salary',
             },
             {
-                type: 'input',
+                type: 'list',
                 message: 'To which department ID does the role belong?',
                 name: 'department_id',
+                choices: deptChoices(),
             },
         ])
         .then((response) => {
