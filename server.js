@@ -71,7 +71,7 @@ function startMenu(isStartUp) {
                 case 'Update Employee':
                     updateEmployee();
                     break;
-                case 'Quit':  //might need something to actually end the program.  This just ends the switch statement
+                case 'Quit':
                     console.log("Thank you for using Employee Tracker");
                     process.exit(0);
             }
@@ -241,10 +241,6 @@ function addEmployee() {
     })
 };
 
-
-
-
-
 //updateEmployee to update their new role & adds it to the database
 function updateEmployee() {
     db.query('SELECT * FROM employee', function (err, res) {
@@ -265,7 +261,6 @@ function updateEmployee() {
                         value: role.id,
                     })
             })
-
             inquirer
                 .prompt([
                     {

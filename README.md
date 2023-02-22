@@ -25,6 +25,8 @@ Things I've learned:
 - How to use mySQL, creating schema & seeding it
 - How to create queries & joins 
 - An awful lot of array mapping and using them in inquirer.prompts
+- Using the 'when' in the Inquirer NPM library to create a press any key to continue for the user 
+- Creating a clean quit from the application for the user 
 
  ## Table of Contents 
   - [Installation](#installation)
@@ -42,6 +44,9 @@ Run "npm install" to create the package-lock.json & commence the application wit
 
   ## Usage
 
+A walkthrough video is available! https://drive.google.com/file/d/1VSrTg-a_JIuGvDF6f8ACBDBVgVHMItfM/view 
+
+The start of the application: 
 ![start-screen-list-of-choices-to-begin](./assets/Start-screen.png)
 
 The client can arrow up and down through the 8 choices to be made. For example, they can view all departments: 
@@ -50,12 +55,13 @@ The client can arrow up and down through the 8 choices to be made. For example, 
 
 
 And view all their employees:
+
 ![list-of-all-employees-including-job-role-dept-salary-manager](./assets/all-employees.png)
 
 
 
 A gif on how to use the application: <br>
-![gif-demonstration-of-the-application](.)
+![gif-demonstration-of-the-application](./assets/walkthrough.gif)
 
 
 
