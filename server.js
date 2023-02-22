@@ -183,12 +183,12 @@ function addEmployee() {
                     value: role.id,
                 })
         })
-        db.query("SELECT CONCAT(manager.first_name,' ', manager.last_name) AS manager FROM employee;", function (err, res) {
+        db.query("SELECT employee.id, employee.first_name, employee.last_name, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN employee manager on manager.id = employee.manager_id;", function (err, res) {
             const managerList = res.map(employee => {
                 return (
                     {
                         name: employee.first_name + ' ' + employee.last_name,
-                        value: employee.last_name,
+                        value: employee.manager_id,
                     })
             })
             inquirer
@@ -223,7 +223,7 @@ function addEmployee() {
                             console.log(err)
                             process.exit(1);
                         }
-                        console.log('Employee has been added')
+                        console.log(`New Employee ${first_name} ${last_name} has been added`)
                         startMenu();
                     })
                 })
