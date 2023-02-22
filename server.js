@@ -173,7 +173,7 @@ function addRole() {
     })
 };
 
-//testing function 
+//addEmployee - prompts to enter in employee's first name, last name, role & manager & adds to the database
 function addEmployee() {
     db.query('SELECT id, title FROM role;', function (err, res) {
         const jobNames = res.map(role => {
