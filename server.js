@@ -239,13 +239,21 @@ function addRole() {
 
 //testing function 
 function addEmployee() {
-    db.query('SELECT employee.role_id, role.title FROM employee LEFT JOIN role on ON employee.role_id=role.id;', function (err, res) {
+    db.query('SELECT id, title FROM role;', function (err, res) {
         const jobNames = res.map(role => {
             return (
                 {
                     name: role.title,
-                    value: employee.role_id,
+                    value: role.id,
                 })
+        })
+        db.query("SELECT CONCAT(manager.first_name,' ', manager.last_name) AS manager FROM employee;", function (err, res) {
+            const managerList = res.map(employee => {
+                return (
+                    {
+                        name: employee.first_name + ' ' + employee.last_name,
+                        value: employee.last_name,
+                    })
             })
             inquirer
                 .prompt([
@@ -265,19 +273,6 @@ function addEmployee() {
                         name: 'role_id',
                         choices: jobNames,
                     },
-                ])
-        })
-        //Name displays to the user in the inquirer prompt, value is being returned in the response to be used in the SQL query to update employee role
-        db.query("CONCAT(manager.first_name,' ', manager.last_name) AS manager  FROM employee;", function (err, res) {
-            const managerList = res.map(employee => {
-                return (
-                    {
-                        name: employee.first_name + ' ' + employee.last_name,
-                        value: employee.last_name,
-                    })
-            })
-            inquirer
-                .prompt([
                     {
                         type: 'list',
                         message: 'Who is the manager for the role?',
@@ -297,7 +292,8 @@ function addEmployee() {
                     })
                 })
         })
-    };
+    })
+};
 
 
 
